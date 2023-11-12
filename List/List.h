@@ -3,18 +3,18 @@
 #ifndef LIST_H
 #define LIST_H
 
-#ifdef LIST_EXPORTS
+//#ifndef LIST_EXPORTS
 #define LIST_API __declspec(dllexport)
-#else
-#define LIST_API __declspec(dllimport)
-#endif
+//#else
+//#define LIST_API __declspec(dllimport)
+//#endif
 
 using namespace std;
 
 namespace MyList {
 
-	template<class T>
-	class List;
+	//template<class T>
+	//class List;
 
 	template<class T>
 	class NodeList;
@@ -23,7 +23,7 @@ namespace MyList {
 	/// Пользовательский класс, реализующий структуру данных "Односвязаный список"
 	/// </summary>
 	template<class T>
-	class __declspec(dllexport) List {
+	class LIST_API List {
 
 	public:
 		List();
@@ -33,7 +33,7 @@ namespace MyList {
 		/// Конструктор копирования
 		/// </summary>
 		/// <param name=""></param>
-		List(List<T> &);
+		List(const List<T> &);
 
 		/// <summary>
 		/// Счётчик элементов.
@@ -43,15 +43,27 @@ namespace MyList {
 		NodeList<T> *Head, *Tail;
 
 		/// <summary>
+		/// Функция создаёт узел с классом типа T и добавляет его в список.
+		/// </summary>
+		/// <param name="T">Значение</param>
+		void Add(const T);
+
+		/// <summary>
+		/// Функция создаёт узел с классом типа T и добавляет его в список.
+		/// </summary>
+		/// <param name="T">Значение</param>
+		void Add(const T *);
+
+		/// <summary>
 		/// Функция создаёт узел с Значением типа T и добавляет его в список.
 		/// </summary>
-		/// <param name="T">Ключ</param>
-		void Add(T *);
+		/// <param name="T">Значение</param>
+		//void Add(const T &);
 
 		/// <summary>
 		/// Объединение списков.
 		/// </summary>
-		void Add(List<T> *);
+		void Add(const List<T> *);
 
 		/// <summary>
 		/// Функция добавления в список созданного узла.
@@ -63,13 +75,13 @@ namespace MyList {
 		/// Функция удаления по ключу.
 		/// </summary>
 		/// <param name="key">Значение удаляемого узла.</param>
-		void Delete(T *);
+		void Delete(const T &);
 
 		/// <summary>
 		/// Функия удаления по указателю на объект.
 		/// </summary>
 		/// <param name="node">Удаляемый узел.</param>
-		void Delete(NodeList<T> *);
+		void Delete(const NodeList<T> *);
 
 		/// <summary>
 		/// Функия очистки списка.
@@ -82,10 +94,10 @@ namespace MyList {
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	template<class T>
-	class __declspec(dllexport) NodeList {
+	class LIST_API NodeList {
 
 	public:
-		T *Оbj;
+		T Оbj;
 
 		NodeList<T> *Next;
 
@@ -103,13 +115,19 @@ namespace MyList {
 		/// Создание узла с заданным значением.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		NodeList(T*);
+		NodeList(const T&);
+
+		/// <summary>
+		/// Создание узла с заданным значением.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		NodeList(const T*);
 
 		/// <summary>
 		/// Конструктор копирования
 		/// </summary>
 		/// <param name=""></param>
-		NodeList(NodeList<T> &);
+		NodeList(const NodeList<T> *);
 	};
 }
 

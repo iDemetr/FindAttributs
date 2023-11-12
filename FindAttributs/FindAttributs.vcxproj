@@ -146,6 +146,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="program_Adjective_analize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dictionary\Dictionary.vcxproj">
@@ -158,6 +159,10 @@
   <ItemGroup>
     <ClInclude Include="Header.h" />
     <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Data\Adjective1.txt" />
+    <Text Include="..\Data\Analized Text.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

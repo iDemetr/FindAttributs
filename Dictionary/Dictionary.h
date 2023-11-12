@@ -3,11 +3,11 @@
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
 
-#ifdef DICTIONARY_EXPORTS
+//#ifdef DICTIONARY_EXPORTS
 #define DICTIONARY_API __declspec(dllexport)
-#else
-#define DICTIONARY_API __declspec(dllimport)
-#endif
+//#else
+//#define DICTIONARY_API __declspec(dllimport)
+//#endif
 
 #include "List.h"
 using namespace std;
@@ -17,11 +17,19 @@ namespace SDictionary {
 	template<class TKey, class TValue>
 	class NodeDictionary;
 
+	// Шаблонный тип узла словаря
+	//template<class Tkey, class TValue>
+	#define NodeDict NodeDictionary<TKey, TValue>
+
+	// Шаблонный тип списка значений узла словаря Value
+	//template<class TValue>
+	#define NodeDictListValue MyList::List<TValue>
+
 	/// <summary>
 	/// Пользовательский класс, реализующий структуру данных "Словарь"
 	/// </summary>
 	template<class TKey, class TValue>
-	class __declspec(dllexport) Dictionary {
+	class DICTIONARY_API Dictionary {
 
 	public:
 
@@ -34,7 +42,7 @@ namespace SDictionary {
 		/// <param name=""></param>
 		Dictionary(Dictionary&);
 
-		NodeDictionary<TKey, TValue>* Head, * Tail;
+		NodeDict* Head, * Tail;
 
 		/// <summary>
 		/// Счётчик ключей.
@@ -46,39 +54,53 @@ namespace SDictionary {
 		/// </summary>
 		/// <param name="TKey">Ключ</param>
 		/// <param name="TValue">Значение</param>
-		void Add(TKey*, TValue*);
+		//void Add(TKey*, TValue*);
+
+		/// <summary>
+		/// Функция создаёт узел с Ключом TKey и Значением TValue и добавляет его в словарь.
+		/// </summary>
+		/// <param name="TKey">Ключ</param>
+		/// <param name="TValue">Значение</param>
+		void Add(const TKey&, const TValue&);
+
+		/// <summary>
+		/// Функция создаёт узел с Ключом TKey и списком значений List<TValue> и добавляет его в словарь.
+		/// </summary>
+		/// <param name="TKey">Ключ</param>
+		/// <param name="MyList::List<TValue>">Список значений</param>
+		void Add(const TKey&, const NodeDictListValue*);
 
 		/// <summary>
 		/// Функция добавления в словарь созданного узла.
 		/// </summary>
 		/// <param name="node">Указатель на добавляемый узел</param>
-		void Append(NodeDictionary<TKey, TValue>*);
+		void Append(NodeDict*);
 
 		/// <summary>
 		/// Функция проверки наличия узла с заданным ключём.
 		/// </summary>
 		/// <param name=""></param>
 		/// <returns></returns>
-		bool Contains(TKey*);
+		bool Contains(const TKey&);
 
 		/// <summary>
 		/// Возвращает указатель на узел словаря
 		/// </summary>
 		/// <param name=""></param>
 		/// <returns></returns>
-		NodeDictionary<TKey, TValue>* Get(TKey*);
+		NodeDict* Get(const TKey&);
 
 		/// <summary>
 		/// Функция удаления по ключу.
 		/// </summary>
-		/// <param name="key">Ключ удаляемого узла.</param>
-		void Delete(TKey*);
+		/// <param name="key">Ключ удаляемого узла</param>
+		void Delete(const TKey&);
 
 		/// <summary>
 		/// Функия удаления по указателю на объект.
 		/// </summary>
-		/// <param name="node">Удаляемый узел.</param>
-		void Delete(NodeDictionary<TKey, TValue>*);
+		/// <param name="node">Удаляемый узел</param>
+		void Delete(const NodeDict*);
 
 		/// <summary>
 		/// Функия очистки словаря от всех созданных узлов.
@@ -92,21 +114,21 @@ namespace SDictionary {
 	/// <typeparam name="TKey"></typeparam>
 	/// <typeparam name="TValue"></typeparam>
 	template<class TKey, class TValue>
-	class __declspec(dllexport) NodeDictionary {
+	class DICTIONARY_API NodeDictionary {
 
 	public:
 
 		/// <summary>
 		/// Ключ узла.
 		/// </summary>
-		TKey* Key;
+		TKey Key;
 
 		/// <summary>
 		/// Значение узла.
 		/// </summary>
-		TValue* Value;
+		NodeDictListValue* Value;
 
-		NodeDictionary<TKey, TValue>* Next, * Previous;
+		NodeDict* Next, *Previous;
 
 		/// <summary>
 		/// Конструктор, обнуляющуй узкатели на следующий и предыдущий 
@@ -123,27 +145,32 @@ namespace SDictionary {
 		/// </summary>
 		/// <typeparam name="Key"></typeparam>
 		/// <typeparam name="value"></typeparam>
-		NodeDictionary(TKey*, TValue*);
+		NodeDictionary(const TKey&, const TValue&);
+
+		/// <summary>
+		/// Создание узла с заданным TKey и списком List<TValue>
+		/// </summary>
+		/// <typeparam name="Key"></typeparam>
+		/// <typeparam name="value"></typeparam>
+		NodeDictionary(const TKey&, const NodeDictListValue*);
 
 		/// <summary>
 		/// Конструктор копирования
 		/// </summary>
 		/// <param name=""></param>
-		NodeDictionary(NodeDictionary&);
+		NodeDictionary(const NodeDict*);
 
 		/// <summary>
 		/// Добавление значений в узел
 		/// </summary>
 		/// <param name=""></param>
-		template<class T>
-		void AddValue(MyList::List<T>*);
+		void AddValue(const TValue&);
 
 		/// <summary>
 		/// Удаление значения из узла
 		/// </summary>
 		/// <param name=""></param>
-		template<class T>
-		void DelValue(T*);
+		void DelValue(const TValue&);
 	};
 }
 #endif

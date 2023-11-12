@@ -1,3 +1,5 @@
+#pragma once
+
 #include "pch.h"
 #include "List.h"
 
@@ -13,12 +15,12 @@ namespace MyList {
 	List<T>::List() {
 		Head = Tail = nullptr;
 
-		Count = 0;
+		this->Count = 0;
 	}
 
 	template<class T>
-	List<T>::List(List<T> &list) {
-		Count = list.Count;
+	List<T>::List(const List<T> &list) {
+		this->Count = list.Count;
 
 		//Возможно избыточная проверка на наличие указателей.
 		if(list.Head) Head = new NodeList<T>(*list.Head);
@@ -34,22 +36,41 @@ namespace MyList {
 	}
 
 	template<class T>
-	void List<T>::Add(T *obj) {
-		NodeList<T> *node = new NodeList<T>(obj);																	//Передача объeкта по значению
+	void List<T>::Add(const T obj) {
+		NodeList<T>* node = new NodeList<T>(obj);										//Передача объeкта по значению
+
+		this->Count++;
+
+		Append(node);
+	}
+
+	//template<class T>
+	//void List<T>::Add(const T& obj) {
+	//	NodeList<T>* node = new NodeList<T>(obj);										//Передача объeкта по значению
+	//
+	//	this->Count++;
+	//
+	//	Append(node);
+	//}
+
+	template<class T>
+	void List<T>::Add(const T *obj) {
+		NodeList<T>* node = new NodeList<T>(&*obj);										//Передача объeкта по значению
 
 		this->Count++;
 
  		Append(node);
 	}
 
+
 	template<class T>
-	void List<T>::Add(List<T> *list) {
+	void List<T>::Add(const List<T> *list) {
 
 		NodeList<T> *tmp = list->Head;
 
 		while(tmp) {
 
-			NodeList<T> *node = new NodeList<T>(tmp->Оbj);																	//Передача объeкта по значению
+			NodeList<T> *node = new NodeList<T>(tmp->Оbj);								//Передача объeкта по значению
 			
 			this->Count++;
 			
@@ -72,15 +93,15 @@ namespace MyList {
 
 
 	template<class T>
-	void List<T>::Delete(T *obj) {
+	void List<T>::Delete(const T &obj) {
 
 		NodeList<T> *node = this->Head;
 
 		//Поиск узла с заданным ключом
-		while(node && *node->Оbj != *obj) node = node->Next;
+		while(node && node->Оbj != obj) node = node->Next;
 
 		//Если узел с заданным ключом найден
-		if(*node->Оbj == *obj) {
+		if(node->Оbj == obj) {
 			Delete(node);
 			return;
 		}
@@ -89,7 +110,7 @@ namespace MyList {
 	}
 
 	template<class T>
-	void List<T>::Delete(NodeList<T> *node) {
+	void List<T>::Delete(const NodeList<T> *node) {
 
 		//Если удаляемый элемент - голова.
 		if(node == Head) { Head = Head->Next; }
@@ -128,33 +149,45 @@ namespace MyList {
 	//============================================================================================================================||
 
 	template<class T>
-	NodeList<T>::NodeList(T *obj) {
+	NodeList<T>::NodeList(const T &obj) {
 
-		if(obj) this->Оbj = new T(*obj);
-		else this->Оbj = nullptr;
+		//if(obj) 
+			this->Оbj = obj;
+		//else this->Оbj = NULL;
 
 		Next = nullptr;
 	}
 
 	template<class T>
-	NodeList<T>::NodeList(NodeList<T> &Node) {
+	NodeList<T>::NodeList(const T* obj) {
 
-		if(Node.Next) this->Next = new NodeList<T>(*Node.Next);
+		if (obj) 
+			this->Оbj = *(obj);
+		//else this->Оbj = ;
+
+		Next = nullptr;
+	}
+
+	template<class T>
+	NodeList<T>::NodeList(const NodeList<T> *Node) {
+
+		if(Node->Next) this->Next = new NodeList<T> *(Node->Next);
 		else this->Next = nullptr;
 
-		if(Node.Оbj) this->Оbj = new T(*Node.Оbj);
-		else this->Оbj = nullptr;
+		if(Node->Оbj) this->Оbj = Node->Оbj;
+		else this->Оbj = NULL;
 	}
 
 	template<class T>
 	NodeList<T>::NodeList() {
-		Next = Оbj = nullptr;
+		Next = nullptr;
+		Оbj = NULL;
 	}
 
 	template<class T>
 	NodeList<T>::~NodeList() {
 		Next = nullptr;
 
-		delete this->Оbj;
+		//delete this->Оbj;
 	}
 }

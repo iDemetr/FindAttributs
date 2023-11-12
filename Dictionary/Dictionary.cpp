@@ -7,31 +7,31 @@ namespace SDictionary {
 #pragma region --- Предворительное инстанцирование шаблонов ---
 
 	//Предворительное инстанцирование шаблонов словаря
-	template Dictionary<string, List<string>>;
-	template Dictionary<string, List<int>>;
-	template Dictionary<string, List<double>>;
-	template Dictionary<string, List<float>>;
-
-	template Dictionary<int, List<string>>;
-	template Dictionary<int, List<int>>;
-	template Dictionary<int, List<double>>;
-	template Dictionary<int, List<float>>;
-
-	template Dictionary<double, List<string>>;
-	template Dictionary<double, List<int>>;
-	template Dictionary<double, List<double>>;
-	template Dictionary<double, List<float>>;
-
-	template Dictionary<float, List<string>>;
-	template Dictionary<float, List<int>>;
-	template Dictionary<float, List<double>>;
-	template Dictionary<float, List<float>>;
+	template Dictionary<std::string, std::string>;
+	template Dictionary<string, int>;
+	template Dictionary<string, double>;
+	template Dictionary<string, float>;
+	
+	template Dictionary<int, string>;
+	template Dictionary<int, int>;
+	template Dictionary<int, double>;
+	template Dictionary<int, float>;
+	
+	template Dictionary<double, string>;
+	template Dictionary<double, int>;
+	template Dictionary<double, double>;
+	template Dictionary<double, float>;
+	
+	template Dictionary<float, string>;
+	template Dictionary<float, int>;
+	template Dictionary<float, double>;
+	template Dictionary<float, float>;
 
 	//Предворительное инстанцирование шаблонов списка
-	template List<string>;
-	template List<int>;
-	template List<double>;
-	template List<float>;
+	//template MyList::List<string>;
+	//template MyList::List<int>;
+	//template MyList::List<double>;
+	//template MyList::List<float>;
 
 #pragma endregion
 
@@ -45,11 +45,11 @@ namespace SDictionary {
 	}
 
 	template<class TKey, class TValue>
-	Dictionary<TKey, TValue>::Dictionary(Dictionary& dictoinary) {
+	Dictionary<TKey, TValue>::Dictionary(Dictionary<TKey, TValue>& dictoinary) {
 		Count = dictoinary.Count;
 
 		//Возможно избыточная проверка на наличие указателей.
-		if (dictoinary.Head) Head = new NodeDictionary<TKey, TValue>(*dictoinary.Head);
+		if (dictoinary.Head) Head = new NodeDict(*dictoinary.Head);
 		else Head = nullptr;
 
 		//Поиск нового адреса хвоста.
@@ -64,14 +64,29 @@ namespace SDictionary {
 	//============================================================================================================================||
 
 	template<class TKey, class TValue>
-	void Dictionary<TKey, TValue>::Add(TKey* key, TValue* value) {
+	void Dictionary<TKey, TValue>::Add(const TKey& key, const TValue& value) {
+
+		//Проверка на дублирование ключей.
+		if (Contains(key)) {
+			NodeDict* node = Dictionary::Get(key);
+			node->AddValue(value);
+		}
+		else {
+			NodeDict* node = new NodeDict(key, value);
+			Append(node);
+		}
+		this->Count++;
+	}
+
+	template<class TKey, class TValue>
+	void Dictionary<TKey, TValue>::Add(const TKey& key, const NodeDictListValue* list) {
 
 		//Проверка на дублирование ключей.
 		if (Contains(key)) {
 			throw string("\n A node with such a key is already in the dictionary!!"); return;
 		}
 
-		NodeDictionary<TKey, TValue>* node = new NodeDictionary<TKey, TValue>(key, value);
+		NodeDict* node = new NodeDict(key, list);
 
 		this->Count++;
 
@@ -79,7 +94,7 @@ namespace SDictionary {
 	}
 
 	template<class TKey, class TValue>
-	void Dictionary<TKey, TValue>::Append(NodeDictionary<TKey, TValue>* node) {
+	void Dictionary<TKey, TValue>::Append(NodeDict* node) {
 
 		if (this->Head == nullptr) {
 			this->Head = this->Tail = node;
@@ -92,36 +107,36 @@ namespace SDictionary {
 	}
 
 	template<class TKey, class TValue>
-	bool Dictionary<TKey, TValue>::Contains(TKey* key) {
+	bool Dictionary<TKey, TValue>::Contains(const TKey& key) {
 
-		NodeDictionary<TKey, TValue>* node = Head;
+		NodeDict* node = Head;
 
-		while (node) { if (*node->Key == *key) { return true; } else node = node->Next; }
+		while (node) { if (node->Key == key) { return true; } else node = node->Next; }
 
 		return false;
 	}
 
 	template<class TKey, class TValue>
-	NodeDictionary<TKey, TValue>* Dictionary<TKey, TValue>::Get(TKey* key) {
+	NodeDict* Dictionary<TKey, TValue>::Get(const TKey& key) {
 
-		NodeDictionary<TKey, TValue>* node = Head;
+		NodeDict* node = Head;
 
-		while (node) { if (*node->Key == *key) { return node; } else node = node->Next; }
+		while (node) { if (node->Key == key) { return node; } else node = node->Next; }
 
 		return nullptr;
 	}
 
 	template<class TKey, class TValue>
-	void Dictionary<TKey, TValue>::Delete(TKey* key) {
+	void Dictionary<TKey, TValue>::Delete(const TKey& key) {
 
 		NodeDictionary<TKey, TValue>* node = this->Head;
 
 		//Поиск узла с заданным ключом
-		while (node && *node->Key != *key)
+		while (node && node->Key != key)
 			node = node->Next;
 
 		//Если узел с заданным ключом найден
-		if (*node->Key == *key) {
+		if (node->Key == key) {
 			Delete(node);
 			return;
 		}
@@ -130,7 +145,7 @@ namespace SDictionary {
 	}
 
 	template<class TKey, class TValue>
-	void Dictionary<TKey, TValue>::Delete(NodeDictionary<TKey, TValue>* node) {
+	void Dictionary<TKey, TValue>::Delete(const NodeDict* node) {
 
 		//Если удаляемый элемент - голова.
 		if (node == Head) { Head = Head->Next; }
@@ -163,35 +178,53 @@ namespace SDictionary {
 
 	template<class TKey, class TValue>
 	NodeDictionary<TKey, TValue>::NodeDictionary() {
-		Next = Previous = Key = Value = nullptr;
+		Next = Previous = nullptr;
+		Value = new NodeDictListValue();
+		//Key = NULL;
 	}
 
 	template<class TKey, class TValue>
-	NodeDictionary<TKey, TValue>::NodeDictionary(TKey* key, TValue* value) {
+	NodeDictionary<TKey, TValue>::NodeDictionary(const TKey& key, const TValue& value) {
 
-		if (key) Key = new TKey(*key);
-		else Key = nullptr;
+		//if (key) 
+			Key = key;
+		//else Key = NULL;
 
-		if (value) Value = new TValue(*value);
-		else Value = nullptr;
+		//if (value) 
+			Value = new NodeDictListValue();
+			Value->Add(value);
+		//else Value = NULL;
 
 		Next = Previous = nullptr;
 	}
 
 	template<class TKey, class TValue>
-	NodeDictionary<TKey, TValue>::NodeDictionary(NodeDictionary& node) {
+	NodeDictionary<TKey, TValue>::NodeDictionary(const TKey& key, const NodeDictListValue* list) {
+		//if (key) 
+			Key = key;
+		//else Key = NULL;
 
-		if (node.Next) this->Next = new NodeDictionary<TKey, TValue>(*node.Next);
+		//if (value) 
+			Value = new NodeDictListValue(*list);
+		//else Value = NULL;
+
+		Next = Previous = nullptr;
+	}
+
+	template<class TKey, class TValue>
+	NodeDictionary<TKey, TValue>::NodeDictionary(const NodeDict* node) {
+
+		if (node.Next) this->Next = new NodeDict(node->Next);
 		else this->Next = nullptr;
 
-		if (node.Previous) this->Previous = new NodeDictionary<TKey, TValue>(*node.Previous);
+		if (node.Previous) this->Previous = new NodeDict(node->Previous);
 		else this->Previous = nullptr;
 
 
-		if (node.Key) this->Key = new TKey(*node.Key);
-		else this->Key = nullptr;
+		if (node.Key) this->Key = node->Key;
+		else this->Key = NULL;
 
-		if (node.Value) this->Value = new TValue(*node.Value);
+		if (node.Value) this->Value = new NodeDictListValue(node->Value);
 		else this->Value = nullptr;
 	}
 
@@ -199,22 +232,21 @@ namespace SDictionary {
 	NodeDictionary<TKey, TValue>::~NodeDictionary() {
 		Next = nullptr; Previous = nullptr;
 
-		delete Key; delete Value;
+		//delete Key; 
+		delete Value;
 	}
 
 	//============================================================================================================================||
 	
 	template<class TKey, class TValue>
-	template<class T>
-	void NodeDictionary<TKey, TValue>::AddValue(MyList::List<T>* value) {
-		try { this->Value->Add(value); }												// Ошибка, если Value не список.
+	void NodeDictionary<TKey, TValue>::AddValue(const TValue& value) {
+		try { this->Value->Add(value); }
 		catch (exception& e) { throw string(e.what()); }
 	}
 
 	template<class TKey, class TValue>
-	template<class T>
-	void NodeDictionary<TKey, TValue>::DelValue(T* value) {
-		try { this->Value->Delete(value); }												// Ошибка, если Value не список.
+	void NodeDictionary<TKey, TValue>::DelValue(const TValue& value) {
+		try { this->Value->Delete(value); }
 		catch (string& mess) { throw mess; }
 		catch (exception& e) { throw string(e.what()); }
 	}
