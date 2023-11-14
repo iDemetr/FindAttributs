@@ -61,26 +61,26 @@ void Getting_Started(){
 		string str;
 		int pos1=0, pos2=0,j=0;
         while(!File.eof()){
-			getline(File, str, '\n');
-			pos1=0;
-			pos2=0;
-			j=0;
-            while(j<=str.size()){
-                //cout << "str["<<j<<"]="<<str[j] <<endl;
-                if((str[j]>'a'-1 && str[j]< 'z'+1 || str[j]=='-') && j<str.size())//j - in case we don't have symbol of ending file in the end'
-                    pos2++;
-                else if(pos2>0){//seperator can be of any kind ,if j==str.size()
-                	list_ptr = new Adjective_ending;
-                	list_ptr->end=str.substr(pos1,pos2);
-                	//cout <<"Filter found, str=" <<str.substr(pos1,pos2)<<	" pos1="<< pos1 << " pos2="<<pos2+pos1<<endl;
-                	if(prev_list_ptr!=nullptr)
-                		prev_list_ptr->next_ptr=list_ptr;
-                	else
-                		start_Adjective_ending=list_ptr;
-                	list_ptr->next_ptr=nullptr;
-                	prev_list_ptr=list_ptr;
-      		   	pos1=j+1;
-      		   	pos2=0; 	
+		getline(File, str, '\n');
+		pos1=0;
+		pos2=0;
+		j=0;
+            	while(j<=str.size()){
+	                //cout << "str["<<j<<"]="<<str[j] <<endl;
+	                if((str[j]>'a'-1 && str[j]< 'z'+1 || str[j]=='-') && j<str.size())//j - in case we don't have symbol of ending file in the end
+	                    	pos2++;
+	                else if(pos2>0){//seperator can be of any kind ,if j==str.size()
+	                	list_ptr = new Adjective_ending;
+	                	list_ptr->end=str.substr(pos1,pos2);
+	                	//cout <<"Filter found, str=" <<str.substr(pos1,pos2)<<	" pos1="<< pos1 << " pos2="<<pos2+pos1<<endl;
+	                	if(prev_list_ptr!=nullptr)
+	                		prev_list_ptr->next_ptr=list_ptr;
+	                	else
+	                		start_Adjective_ending=list_ptr;
+	                	list_ptr->next_ptr=nullptr;
+	                	prev_list_ptr=list_ptr;
+	      		   	pos1=j+1;
+	      		   	pos2=0; 	
                 }
                 else
                 	pos1=j+1;
@@ -158,7 +158,7 @@ void sentence_list_filter(){
 		//cout << "str="<<*str<<endl;
 		pos=0;
 		while(pos<(*str).size()){
-			while((*str)[pos+pos1]>'a'-1 && (*str)[pos+pos1]<'z'+1 || (*str)[pos+pos1]>'A'-1 && (*str)[pos+pos1]<'Z'+1)
+			while((*str)[pos+pos1]>'a'-1 && (*str)[pos+pos1]<'z'+1 || (*str)[pos+pos1]>'A'-1 && (*str)[pos+pos1]<'Z'+1 || (*str)[pos+pos1]=='-')
 				pos1++;
 			ends=start_Adjective_ending;
 			if(pos1>0){
