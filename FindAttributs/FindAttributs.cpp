@@ -1,13 +1,156 @@
-﻿// FindAttributs.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-#pragma once
-#include "pch.h";
+﻿#pragma once
+
+#include "pch.h"
+#include "Agjective.H"
 
 using namespace std;
 using namespace SDictionary;
-using namespace MyList;
+using namespace SList;
+
+void printCMD(DictAdjectives*);
+void printFile(DictAdjectives*);
 
 int main()
 {
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+
+	cout << "\n\t Запуск алгоритма поиска определений в предложениях!";
+	cout << "\n-----------------------------------------------------------";
+	cout << "\n\n Для начала работы, нажмите любую клавишу...";
+
+	_getch(); system("cls");
+
+
+	//#define TEST
+#ifdef  TEST
+
+	List<Sentence> lI;
+
+	lI.Add({ 12321, "asdsa" });
+
+#endif //  TEST
+
+#ifdef NDEBUG
+
+	ifstream File;
+	string nameFile;
+
+	do {
+		if (/*!menu(File_name, file_reading) && */nameFile.empty()) {
+			cout << "Enter name of file with data to work with" << endl;
+			getline(cin, nameFile, '\n');
+			if (nameFile.find('.') == string::npos) {
+				cout << "adding expansion\n";
+				nameFile += ".txt";
+			}
+
+			File.open(nameFile);
+			if (!File.is_open()) {
+				cout << "File doesn't exist" << endl;
+				nameFile = "";
+			}
+		}
+	} while (!File.is_open());
+
+	auto LSentences = Define_Sentences(File);
+	auto adjectives = sentence_list_filter(LSentences);
+
+	cout << "\n\n Вывести результат в консоль.	 (1)";
+	cout << "\n\n Вывести результат в файл.		 (2)";
+	cout << "\n\n Выйти из программы.			(esc)";
+
+	menu s;
+	while (s = (menu)_getch(), s >= PrintCMD && s <= PrintFile && s != quit);
+
+	switch (s)
+	{
+	case PrintCMD:
+		printCMD(adjectives);
+		break;
+	case PrintFile:
+		printFile(adjectives);
+		break;
+	case quit:
+		break;
+	}
+
+
+	cout << "\n\n Завершение программы...";
+	_getch();
+
+#else
+	ifstream File("Data/Analized Text.txt");
+	auto LSentences = Define_Sentences(File);
+	auto adjectives = sentence_list_filter(LSentences);
+	printFile(adjectives);
+
+#endif 
+}
+
+/// <summary>
+/// Вывод словаря в консоль
+/// </summary>
+/// <param name="dict"></param>
+void printCMD(DictAdjectives* dict) {
+	auto tmp = dict->Head;
+
+	cout << "\n\n Список поределений, с перечислением номеров предложений:";
+
+	int i(0);
+	while (tmp) {
+		cout << "\n " << ++i << ": " << tmp->Key << " - ";
+
+		auto tmp2 = tmp->Value->Head;
+		while (tmp2) {
+			cout << tmp2->Оbj->Оbj.first << ", ";
+			tmp2 = tmp2->Next;
+		}
+
+		tmp = tmp->Next;
+	}
+}
+
+/// <summary>
+/// Вывод словаря в файл
+/// </summary>
+/// <param name="dict"></param>
+void printFile(DictAdjectives* dict) {
+
+	ofstream file(AdjectivesRes);
+	if (!file.is_open()) {
+		return;
+	}
+
+	cout << "\n Сохранение в файл: " << AdjectivesRes;
+
+	try {
+		auto tmp = dict->Head;
+
+		file << " Список определений, с перечислением номеров предложений:";
+
+		int i(0);
+		while (tmp) {
+			file << "\n " << ++i << ": " << tmp->Key << " - ";
+
+			auto tmp2 = tmp->Value->Head;
+			while (tmp2) {
+				file << tmp2->Оbj->Оbj.first << ", ";
+				tmp2 = tmp2->Next;
+			}
+
+			tmp = tmp->Next;
+		}
+	}
+	catch (exception& e) {
+		cout << "\n\n Error! " << e.what();
+	}
+
+	file.close();
+}
+
+#pragma region --- Подсказка по пользованию кастомных структур ---
+/*
 	//Наш словарь
 	Dictionary<int, string> dict;
 
@@ -19,9 +162,9 @@ int main()
 	LStr.Add("asdasd");		// Добавление анонимное
 	LStr.Add(str);			// Добавление переменной
 
-	// По канону добавление значений по ключу требовало получить указатель на узел через get(key) и 
+	// По канону добавление значений по ключу требовало получить указатель на узел через get(key) и
 	// уже у узла обращаться к списку его значений и добавлять значение в него.
-	
+
 	// Но теперь взаимодействие со словарём стало гораздно удобнее:
 	// по 1 ключу можно добавлять новые значения, которые автоматически упаковываются в списки
 
@@ -32,6 +175,5 @@ int main()
 	dict.Add(3, NULL);		// Создание нового узла без значений
 
 	std::cout << "Hello World!\n";
-}
-
-
+*/
+#pragma endregion

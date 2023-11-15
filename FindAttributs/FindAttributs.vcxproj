@@ -106,7 +106,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>..\..\FindAttributs\List;..\..\FindAttributs\Dictionary;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\FindAttributs\Dictionary;..\..\FindAttributs\List;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -149,20 +149,20 @@
     <ClCompile Include="program_Adjective_analize.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Agjective.H" />
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Data\Analized Text.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Dictionary\Dictionary.vcxproj">
       <Project>{9f7838b6-379e-4b78-975a-8b7f7b6943a5}</Project>
     </ProjectReference>
     <ProjectReference Include="..\List\List.vcxproj">
       <Project>{a6cc12fd-9d3b-4a85-96ed-d983e538377c}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Header.h" />
-    <ClInclude Include="pch.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\Data\Adjective1.txt" />
-    <Text Include="..\Data\Analized Text.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

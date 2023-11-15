@@ -36,11 +36,11 @@
     <ClInclude Include="Header.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Agjective.H">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\Data\Adjective1.txt">
-      <Filter>Data</Filter>
-    </Text>
     <Text Include="..\Data\Analized Text.txt">
       <Filter>Data</Filter>
     </Text>

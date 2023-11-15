@@ -3,27 +3,27 @@
 #ifndef LIST_H
 #define LIST_H
 
-//#ifndef LIST_EXPORTS
+#ifdef LIST_EXPORTS
 #define LIST_API __declspec(dllexport)
-//#else
-//#define LIST_API __declspec(dllimport)
-//#endif
+#else
+#define LIST_API __declspec(dllimport)
+#endif
 
 using namespace std;
 
-namespace MyList {
-
-	//template<class T>
-	//class List;
+namespace SList {
 
 	template<class T>
 	class NodeList;
+
+	template<class T>
+	class List;
 
 	/// <summary>
 	/// Пользовательский класс, реализующий структуру данных "Односвязаный список"
 	/// </summary>
 	template<class T>
-	class LIST_API List {
+	class List {
 
 	public:
 		List();
@@ -94,7 +94,7 @@ namespace MyList {
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	template<class T>
-	class LIST_API NodeList {
+	class NodeList {
 
 	public:
 		T Оbj;
@@ -129,6 +129,9 @@ namespace MyList {
 		/// <param name=""></param>
 		NodeList(const NodeList<T> *);
 	};
+	
+	// Подключение файла реализации....
+	#include "List.hpp"
 }
 
 #endif

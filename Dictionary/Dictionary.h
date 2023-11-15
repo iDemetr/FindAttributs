@@ -3,11 +3,11 @@
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
 
-//#ifdef DICTIONARY_EXPORTS
+#ifdef PDICTIONARY_EXPORTS
 #define DICTIONARY_API __declspec(dllexport)
-//#else
-//#define DICTIONARY_API __declspec(dllimport)
-//#endif
+#else
+#define DICTIONARY_API __declspec(dllimport)
+#endif
 
 #include "List.h"
 using namespace std;
@@ -18,18 +18,18 @@ namespace SDictionary {
 	class NodeDictionary;
 
 	// Шаблонный тип узла словаря
-	//template<class Tkey, class TValue>
-	#define NodeDict NodeDictionary<TKey, TValue>
+	//template<class TKey, class TValue>
+	#define NodeDict SDictionary::NodeDictionary<TKey, TValue>
 
 	// Шаблонный тип списка значений узла словаря Value
-	//template<class TValue>
-	#define NodeDictListValue MyList::List<TValue>
+	//template<class TKey, class TValue>
+	#define NodeDictListValue SList::List<TValue>
 
 	/// <summary>
 	/// Пользовательский класс, реализующий структуру данных "Словарь"
 	/// </summary>
 	template<class TKey, class TValue>
-	class DICTIONARY_API Dictionary {
+	class Dictionary {
 
 	public:
 
@@ -114,7 +114,7 @@ namespace SDictionary {
 	/// <typeparam name="TKey"></typeparam>
 	/// <typeparam name="TValue"></typeparam>
 	template<class TKey, class TValue>
-	class DICTIONARY_API NodeDictionary {
+	class NodeDictionary {
 
 	public:
 
@@ -172,5 +172,8 @@ namespace SDictionary {
 		/// <param name=""></param>
 		void DelValue(const TValue&);
 	};
+
+	// Подключение файла реализации....
+	#include "Dictionary.hpp"
 }
 #endif
