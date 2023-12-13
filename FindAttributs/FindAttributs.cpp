@@ -15,21 +15,11 @@ int main()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
-	cout << "\n\t Запуск алгоритма поиска определений в предложениях!";
-	cout << "\n-----------------------------------------------------------";
-	cout << "\n\n Для начала работы, нажмите любую клавишу...";
+	std::cout << "\n\t Запуск алгоритма поиска определений в предложениях!";
+	std::cout << "\n-----------------------------------------------------------";
+	std::cout << "\n\n Для начала работы, нажмите любую клавишу...";
 
 	_getch(); system("cls");
-
-
-	//#define TEST
-#ifdef  TEST
-
-	List<Sentence> lI;
-
-	lI.Add({ 12321, "asdsa" });
-
-#endif //  TEST
 
 #ifdef NDEBUG
 
@@ -38,16 +28,16 @@ int main()
 
 	do {
 		if (/*!menu(File_name, file_reading) && */nameFile.empty()) {
-			cout << "Enter name of file with data to work with" << endl;
+			std::cout << "\n Введите название файла или путь к файлу:";
 			getline(cin, nameFile, '\n');
 			if (nameFile.find('.') == string::npos) {
-				cout << "adding expansion\n";
+				std::cout << "\n Добавление расширения.";
 				nameFile += ".txt";
 			}
 
 			File.open(nameFile);
 			if (!File.is_open()) {
-				cout << "File doesn't exist" << endl;
+				std::cout << "\n Файл не существует.";
 				nameFile = "";
 			}
 		}
@@ -56,23 +46,25 @@ int main()
 	auto LSentences = Define_Sentences(File);
 	auto adjectives = sentence_list_filter(LSentences);
 
-	cout << "\n\n Вывести результат в консоль.	 (1)";
-	cout << "\n\n Вывести результат в файл.		 (2)";
-	cout << "\n\n Выйти из программы.			(esc)";
+	menu s = NoN;
 
-	menu s;
-	while (s = (menu)_getch(), s >= PrintCMD && s <= PrintFile && s != quit);
+	while (s != quit) {
+		
+		std::cout << "\n\n Вывести результат в консоль.	 (1)";
+		std::cout << "\n Вывести результат в файл.	 (2)";
+		std::cout << "\n Выйти из программы.	        (esc)";
 
-	switch (s)
-	{
-	case PrintCMD:
-		printCMD(adjectives);
-		break;
-	case PrintFile:
-		printFile(adjectives);
-		break;
-	case quit:
-		break;
+	while (s = (menu)_getch(), s < PrintCMD && s > PrintFile && s != quit);
+		switch (s) {
+		case PrintCMD:
+			printCMD(adjectives);
+			break;
+		case PrintFile:
+			printFile(adjectives);
+			break;
+		case quit:
+			break;
+		}
 	}
 
 
@@ -95,15 +87,15 @@ int main()
 void printCMD(DictAdjectives* dict) {
 	auto tmp = dict->Head;
 
-	cout << "\n\n Список поределений, с перечислением номеров предложений:";
+	std::cout << "\n\n Список определений, с перечислением номеров предложений:";
 
 	int i(0);
 	while (tmp) {
-		cout << "\n " << ++i << ": " << tmp->Key << " - ";
+		std::cout << "\n " << ++i << ": " << tmp->Key << " - ";
 
 		auto tmp2 = tmp->Value->Head;
 		while (tmp2) {
-			cout << tmp2->Оbj->Оbj.first << ", ";
+			std::cout << tmp2->Оbj->Оbj.first << ", ";
 			tmp2 = tmp2->Next;
 		}
 
@@ -122,7 +114,7 @@ void printFile(DictAdjectives* dict) {
 		return;
 	}
 
-	cout << "\n Сохранение в файл: " << AdjectivesRes;
+	std::cout << "\n Сохранение в файл: " << AdjectivesRes;
 
 	try {
 		auto tmp = dict->Head;
@@ -143,7 +135,7 @@ void printFile(DictAdjectives* dict) {
 		}
 	}
 	catch (exception& e) {
-		cout << "\n\n Error! " << e.what();
+		std::cout << "\n\n Error! " << e.what();
 	}
 
 	file.close();

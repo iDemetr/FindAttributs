@@ -148,8 +148,8 @@ DictAdjectives* sentence_list_filter(LSentences *Sentences) {
 
 		std::cout << "\r Completed " << status << "/" << Sentences->Count << std::flush;
 
-#ifdef NDEBUG
-		Sleep(20);
+#ifndef NDEBUG
+		Sleep(40);
 #endif
 		str = &(tmp->Îbj.second);
 		//cout << "str="<<*str<<endl;

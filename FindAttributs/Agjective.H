@@ -24,7 +24,7 @@ const std::string AdjectivesRes = "Data/Adjectives_Result.txt";
 /// <summary>
 /// Меню
 /// </summary>
-enum menu { PrintCMD = '1', PrintFile, quit = 27 };
+enum menu { NoN = -1, PrintCMD = '1', PrintFile, quit = 27 };
 
 /// <summary>
 /// Предложение
@@ -46,7 +46,7 @@ typedef Dictionary<std::string, NodeList<Sentence>*> DictAdjectives;
 typedef List<Sentence> LSentences;
 
 /// <summary>
-/// Парсится список фильтров дял поиска определений
+/// Парсится список фильтров для поиска определений
 /// </summary>
 List<std::string> Getting_Started();
 /// <summary>
