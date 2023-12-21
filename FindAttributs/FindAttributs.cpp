@@ -48,6 +48,20 @@ int main()
 
 	std::cout << "\n\n В тексте найдено " << adjectives->Count << " определений.";
 
+	//Added to sort the list of adjectives
+	auto tmp = adjectives->Head;
+	auto pivot=tmp;
+	bool inv=1;
+	//find the middle of list
+	while(tmp){
+		inv=!inv;
+		if(inv)
+			pivot=pivot->Next;
+		tmp=tmp->Next;
+	}
+	QuickSort_dict(dict->Head, pivot, dict->Tail);
+	//End of addition
+	
 	menu s = NoN;
 
 	while (s != quit) {
