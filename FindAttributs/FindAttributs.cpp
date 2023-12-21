@@ -114,7 +114,7 @@ void printFile(DictAdjectives* dict) {
 		return;
 	}
 
-	std::cout << "\n Сохранение в файл: " << AdjectivesRes;
+	std::cout << "\n\n Сохранение в файл: " << AdjectivesRes;
 
 	try {
 		auto tmp = dict->Head;
@@ -133,6 +133,8 @@ void printFile(DictAdjectives* dict) {
 
 			tmp = tmp->Next;
 		}
+
+		std::cout << "\n\n Результат сохранен.\n";
 	}
 	catch (exception& e) {
 		std::cout << "\n\n Error! " << e.what();

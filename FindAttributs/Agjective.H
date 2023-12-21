@@ -20,6 +20,10 @@ const std::string Filter_File = "Data/Adjective.txt";
 /// Результирующий файл
 /// </summary>
 const std::string AdjectivesRes = "Data/Adjectives_Result.txt";
+/// <summary>
+/// Результирующий файл
+/// </summary>
+const std::string NumeredSentences = "Data/Numered Sentences.txt";
 
 /// <summary>
 /// Меню

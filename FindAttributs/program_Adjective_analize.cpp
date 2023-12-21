@@ -43,8 +43,10 @@ List<std::string> Getting_Started() {
 	cout << "\n Подготовка к анализу... \n Считывание фильтров...";
 
 	if (!File.is_open()) {
-		cout << "\n Файл фильтров не обнаружен по пути: Data\\!";
-		throw new exception("Не удаётся отрыть файл Data\\Adjective.txt");
+		cout << "\n Файл фильтров не обнаружен по пути: " << Filter_File;
+		cout << "\n Завершение программы...";
+		getchar();
+		throw new exception("Не удаётся отрыть файл: Data\\Adjective.txt");
 	}
 		
 	string str;
@@ -78,7 +80,8 @@ List<std::string> Getting_Started() {
 
 LSentences* Define_Sentences(std::ifstream &file) {
 	
-	//ifstream file(fileName);
+	ofstream oStr(NumeredSentences);
+	oStr << "Файл пронумерованных предложений, подверженный анализу.";
 
 	LSentences *Sentences = new LSentences;
 	string str, str1;
@@ -106,6 +109,7 @@ LSentences* Define_Sentences(std::ifstream &file) {
 			while(str[pos] == ' ') { pos++; }
 
 			Sentences->Add({ ++n, str.substr(pos, point - pos)});
+			oStr << "\n" << n << ": " << str.substr(pos, point - pos);
 			pos = point + 1;
 			//cout << '#' << n << "	\""<< list_ptr->str<<"\"" << endl;
 		}
