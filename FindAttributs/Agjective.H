@@ -40,7 +40,7 @@ typedef std::pair<int, std::string> Sentence;
 /// <summary>
 /// Словарь распозннных определений
 /// </summary>
-typedef Dictionary<std::string, NodeList<Sentence>*> DictAdjectives;
+typedef Dictionary<std::string, Sentence*> DictAdjectives;
 
 /// <summary>
 /// Список предложений, где:
@@ -48,6 +48,15 @@ typedef Dictionary<std::string, NodeList<Sentence>*> DictAdjectives;
 /// second - предложение
 /// </summary>
 typedef List<Sentence> LSentences;
+
+/// <summary>
+/// Функция быстрой сортировки словаря по ключу
+/// </summary>
+/// <param name="start_dict"></param>
+/// <param name="dict_pivot"></param>
+/// <param name="end_dict"></param>
+template<class TKey, class TValue>
+void QuickSort_Dict(NodeDict* start_dict, NodeDict* dict_pivot, NodeDict* end_dict);
 
 /// <summary>
 /// Парсится список фильтров для поиска определений

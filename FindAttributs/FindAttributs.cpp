@@ -47,20 +47,6 @@ int main()
 	auto adjectives = sentence_list_filter(LSentences);
 
 	std::cout << "\n\n В тексте найдено " << adjectives->Count << " определений.";
-
-	//Added to sort the list of adjectives
-	auto tmp = adjectives->Head;
-	auto pivot=tmp;
-	bool inv=1;
-	//find the middle of list
-	while(tmp){
-		inv=!inv;
-		if(inv)
-			pivot=pivot->Next;
-		tmp=tmp->Next;
-	}
-	QuickSort_dict(dict->Head, pivot, dict->Tail);
-	//End of addition
 	
 	menu s = NoN;
 
@@ -111,7 +97,7 @@ void printCMD(DictAdjectives* dict) {
 
 		auto tmp2 = tmp->Value->Head;
 		while (tmp2) {
-			std::cout << tmp2->Оbj->Оbj.first << ", ";
+			std::cout << tmp2->Оbj->first<< ", ";
 			tmp2 = tmp2->Next;
 		}
 
@@ -143,7 +129,7 @@ void printFile(DictAdjectives* dict) {
 
 			auto tmp2 = tmp->Value->Head;
 			while (tmp2) {
-				file << tmp2->Оbj->Оbj.first << ", ";
+				file << tmp2->Оbj->first << ", ";
 				tmp2 = tmp2->Next;
 			}
 

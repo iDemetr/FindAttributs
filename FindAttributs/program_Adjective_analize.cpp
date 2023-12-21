@@ -215,7 +215,7 @@ DictAdjectives* sentence_list_filter(LSentences *Sentences) {
 					ends = ends->Next;
 
 				if (ends != nullptr) {
-					Adjectives->Add((*str).substr(pos, pos1), tmp);
+					Adjectives->Add((*str).substr(pos, pos1), &tmp->Оbj);
 				}
 			}
 			pos += pos1 + 1;
@@ -227,6 +227,23 @@ DictAdjectives* sentence_list_filter(LSentences *Sentences) {
 
 	std::cout << "\r Completed " << status << "/" << Sentences->Count << std::flush;
 	cout << "\r Анализ завершён." << std::flush;
+
+#pragma region --- Сортировка ---
+
+
+	auto tmpPtr = Adjectives->Head;
+	auto pivot = tmpPtr;
+	bool inv = 1;
+	//find the middle of list
+	while (tmpPtr) {
+		inv = !inv;
+		if (inv)
+			pivot = pivot->Next;
+		tmpPtr = tmpPtr->Next;
+	}
+	QuickSort_Dict(Adjectives->Head, pivot, Adjectives->Tail);
+
+#pragma endregion
 
  	return Adjectives;
 }
@@ -273,6 +290,81 @@ bool filter_check(string* filter, string* sentence, int start, int length) {
 	if (j == (*filter).size() - prefix - postfix + 1)
 		return 1;
 	return 0;
+}
+
+//-----------------------------------------------------------------------------------------------------||
+
+/// <summary>
+/// Сравнивает слова в алфавитном порядке
+/// </summary>
+/// <param name="word1"></param>
+/// <param name="word2"></param>
+/// <returns></returns>
+bool word_compare(string& word1, string& word2) {
+	int W1 = 0, W2 = 0;
+	for (int i = 0; i < word1.size() && i < word2.size(); i++) {
+		if (word1[0] >= 'А' && word1[0] <= 'Я') W1 = 'А' - 'а';
+		else W1 = 0;
+		if (word2[0] >= 'А' && word2[0] <= 'Я') W2 = 'А' - 'а';
+		else W2 = 0;
+		if ((int)word1[i] - W1 > (int)word2[i] - W2) //if(word1[i]>word2[i])
+			return false;
+		else if (word1[i] - W1 != word2[i] - W2)
+			return true;
+	}
+	if (word1.size() > word2.size()) //if(word1.size()>word2.size())
+		return false;
+	return true;
+}
+
+
+template<class TKey, class TValue>
+void QuickSort_Dict(NodeDict* start_dict, NodeDict* dict_pivot, NodeDict* end_dict) {
+	string pivot = dict_pivot->Key,//ptr to word relatively which sorting is being executed
+		buf = "";
+	//operating pointers to move by dict
+	NodeDict* left_ptr = start_dict,
+		* right_ptr = end_dict,
+		//pointers to next QuickSort iteration
+		* next_pivot_left = start_dict,
+		* next_pivot_right = end_dict;
+	//inverting flags, when true next_pivot ptrs move further
+	bool left = true, right = true;
+	while (left_ptr != right_ptr) {
+		//Left
+		while (word_compare(left_ptr->Key, pivot) && left_ptr != dict_pivot) {
+			left ^= true;
+			left_ptr = left_ptr->Next;
+			if (left)
+				next_pivot_left = next_pivot_left->Next;
+		}
+		//Right
+		while (word_compare(pivot, right_ptr->Key) && dict_pivot != right_ptr) {
+			right ^= true;
+			right_ptr = right_ptr->Previous;
+			if (right)
+				next_pivot_right = next_pivot_right->Previous;
+		}
+		//Swapping
+		if (left_ptr != right_ptr) {
+			buf = left_ptr->Key;
+			left_ptr->Key = right_ptr->Key;
+			right_ptr->Key = buf;
+			//if pivot element was moved
+			if (dict_pivot == left_ptr)
+				dict_pivot = right_ptr;
+			else if (dict_pivot == right_ptr)
+				dict_pivot = left_ptr;
+		}
+	}
+	pivot = "";
+	buf = "";
+		//Sorting left side from pivot
+		if (dict_pivot != start_dict && dict_pivot->Previous != start_dict)//otherwise the dict 1 elem or 2 elem long incl. pivot - so it's sorted guaranteed
+			QuickSort_Dict(start_dict, next_pivot_left, dict_pivot->Previous);
+	//Sorting right side from pivot
+	if (dict_pivot != end_dict && dict_pivot != end_dict->Previous)
+		QuickSort_Dict(dict_pivot->Next, next_pivot_right, end_dict);
 }
 
 //-----------------------------------------------------------------------------------------------------||
