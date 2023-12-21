@@ -28,6 +28,7 @@ using namespace std;
 //}
 
 bool filter_check(string*, string*, int, int);
+int getEndedSentences(const std::string&, const int&);
 
 //-----------------------------------------------------------------------------------------------------||
 
@@ -81,7 +82,7 @@ List<std::string> Getting_Started() {
 LSentences* Define_Sentences(std::ifstream &file) {
 	
 	ofstream oStr(NumeredSentences);
-	oStr << "Файл пронумерованных предложений, подверженный анализу.";
+	oStr << "Файл пронумерованных предложений, подверженных анализу.";
 
 	LSentences *Sentences = new LSentences;
 	string str, str1;
@@ -104,13 +105,18 @@ LSentences* Define_Sentences(std::ifstream &file) {
 		else
 			str = str + str1;
 
-		while (point = str.find('.', pos), point != string::npos) {
+		while (point = getEndedSentences(str, pos), point != string::npos) {
 			// Пропуск пробелов между окончанием предложения и началом нового.
 			while(str[pos] == ' ') { pos++; }
+			point++;
 
-			Sentences->Add({ ++n, str.substr(pos, point - pos)});
-			oStr << "\n" << n << ": " << str.substr(pos, point - pos);
+			string s = str.substr(pos, point - pos);
+
+			Sentences->Add({ ++n, s});
+			oStr << "\n" << n << ": " << s;
 			pos = point + 1;
+			if (pos >= str.size())
+				break;
 			//cout << '#' << n << "	\""<< list_ptr->str<<"\"" << endl;
 		}
 
@@ -128,6 +134,41 @@ LSentences* Define_Sentences(std::ifstream &file) {
 	cout << "\n Обнаружено " << res << " предложений.";
 
 	return Sentences;
+}
+
+int getEndedSentences(const std::string& str, const int& pos) {
+
+	int point = str.find("...", pos);
+	
+	if(point != string::npos)
+		point += str.substr(point+3, str.size() - point - 3).find('.') + 3;
+	else 
+		point = str.find('.', pos);
+	
+
+	if (point != string::npos) {
+		char ch = str[point - 1];
+		if (ch >= 'А' && ch <= 'Я') {
+			point++;
+			string s = str.substr(point, str.size() - point);
+			int p = s.find('.');
+			if (p != string::npos)
+				point += p;
+			else
+				point = p;
+		}
+	}
+	
+	if(point == string::npos)
+		point = str.find('!', pos);
+
+	if(point == string::npos)
+		point = str.find('?', pos);
+
+	if(point == string::npos)
+		point = str.find(';', pos);
+
+	return point;
 }
 
 //-----------------------------------------------------------------------------------------------------||

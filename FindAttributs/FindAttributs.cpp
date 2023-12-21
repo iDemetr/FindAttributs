@@ -46,6 +46,8 @@ int main()
 	auto LSentences = Define_Sentences(File);
 	auto adjectives = sentence_list_filter(LSentences);
 
+	std::cout << "\n\n В тексте найдено " << adjectives->Count << " определений.";
+
 	menu s = NoN;
 
 	while (s != quit) {
