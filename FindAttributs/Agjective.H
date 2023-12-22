@@ -56,7 +56,7 @@ typedef List<Sentence> LSentences;
 /// <param name="dict_pivot"></param>
 /// <param name="end_dict"></param>
 template<class TKey, class TValue>
-void QuickSort_Dict(NodeDict* start_dict, NodeDict* dict_pivot, NodeDict* end_dict);
+void QuickSort_Dict(NodeDict* start_dict, NodeDict* dict_pivot, NodeDict* end_dict, DictAdjectives*);
 
 /// <summary>
 /// Парсится список фильтров для поиска определений

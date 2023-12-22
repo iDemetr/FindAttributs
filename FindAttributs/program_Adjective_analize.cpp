@@ -111,7 +111,6 @@ LSentences* Define_Sentences(std::ifstream &file) {
 			point++;
 
 			string s = str.substr(pos, point - pos);
-
 			Sentences->Add({ ++n, s});
 			oStr << "\n" << n << ": " << s;
 			pos = point + 1;
@@ -194,7 +193,7 @@ DictAdjectives* sentence_list_filter(LSentences *Sentences) {
 		std::cout << "\r Completed " << status << "/" << Sentences->Count << std::flush;
 
 #ifndef NDEBUG
-		Sleep(40);
+		//Sleep(40);
 #endif
 		str = &(tmp->Îbj.second);
 		//cout << "str="<<*str<<endl;
@@ -215,7 +214,8 @@ DictAdjectives* sentence_list_filter(LSentences *Sentences) {
 					ends = ends->Next;
 
 				if (ends != nullptr) {
-					Adjectives->Add((*str).substr(pos, pos1), &tmp->Îbj);
+					string tmpstr = (*str).substr(pos, pos1);
+					Adjectives->Add(tmpstr, &tmp->Îbj);
 				}
 			}
 			pos += pos1 + 1;
@@ -230,7 +230,6 @@ DictAdjectives* sentence_list_filter(LSentences *Sentences) {
 
 #pragma region --- Ñîðòèðîâêà ---
 
-
 	auto tmpPtr = Adjectives->Head;
 	auto pivot = tmpPtr;
 	bool inv = 1;
@@ -241,7 +240,7 @@ DictAdjectives* sentence_list_filter(LSentences *Sentences) {
 			pivot = pivot->Next;
 		tmpPtr = tmpPtr->Next;
 	}
-	QuickSort_Dict(Adjectives->Head, pivot, Adjectives->Tail);
+	QuickSort_Dict(Adjectives->Head, pivot, Adjectives->Tail, Adjectives);
 
 #pragma endregion
 
@@ -319,15 +318,22 @@ bool word_compare(string& word1, string& word2) {
 
 
 template<class TKey, class TValue>
-void QuickSort_Dict(NodeDict* start_dict, NodeDict* dict_pivot, NodeDict* end_dict) {
-	string pivot = dict_pivot->Key,//ptr to word relatively which sorting is being executed
-		buf = "";
+void QuickSort_Dict(NodeDict* start_dict, NodeDict* dict_pivot, NodeDict* end_dict, DictAdjectives* dict) {
+	string pivot = dict_pivot->Key;//ptr to word relatively which sorting is being executed
+
+	int counter = 0;
+
+	NodeDict* buf_lptr, * buf_rptr;
 	//operating pointers to move by dict
+
 	NodeDict* left_ptr = start_dict,
 		* right_ptr = end_dict,
-		//pointers to next QuickSort iteration
-		* next_pivot_left = start_dict,
-		* next_pivot_right = end_dict;
+		* buf_ptr = nullptr;
+
+	//pointers to next QuickSort iteration
+	NodeDict* next_pivot_left = start_dict,
+			* next_pivot_right = end_dict;
+
 	//inverting flags, when true next_pivot ptrs move further
 	bool left = true, right = true;
 	while (left_ptr != right_ptr) {
@@ -347,24 +353,63 @@ void QuickSort_Dict(NodeDict* start_dict, NodeDict* dict_pivot, NodeDict* end_di
 		}
 		//Swapping
 		if (left_ptr != right_ptr) {
-			buf = left_ptr->Key;
-			left_ptr->Key = right_ptr->Key;
-			right_ptr->Key = buf;
-			//if pivot element was moved
-			if (dict_pivot == left_ptr)
-				dict_pivot = right_ptr;
-			else if (dict_pivot == right_ptr)
-				dict_pivot = left_ptr;
+
+			if (left_ptr->Previous != nullptr)
+				left_ptr->Previous->Next = right_ptr;
+			else
+				dict->Head = right_ptr;
+			if (right_ptr->Next != nullptr)
+				right_ptr->Next->Previous = left_ptr;
+			else
+				dict->Tail = left_ptr;
+			//case them side by side of each other skippped will be operated inside nodes themselves
+			if (left_ptr->Next != right_ptr) {
+				left_ptr->Next->Previous = right_ptr;
+				right_ptr->Previous->Next = left_ptr;
+			}
+			//changing next pivots, they should stay in place relatively the ends of list
+			if (next_pivot_left == left_ptr)
+				next_pivot_left = right_ptr;
+			if (next_pivot_right == right_ptr)
+				next_pivot_right = left_ptr;
+			if (start_dict == left_ptr)
+				start_dict = right_ptr;
+			if (end_dict == right_ptr)
+				end_dict = left_ptr;
+			//changing ptrs inside nodes themselves
+			buf_lptr = left_ptr->Next;
+			buf_rptr = right_ptr->Previous;
+
+
+			left_ptr->Next = right_ptr->Next;
+			right_ptr->Previous = left_ptr->Previous;
+
+			if (buf_lptr != right_ptr) {
+				left_ptr->Previous = buf_rptr;
+				right_ptr->Next = buf_lptr;
+			}
+			else {//will be pointing on each other
+				left_ptr->Previous = right_ptr;
+				right_ptr->Next = left_ptr;
+			}
+			buf_ptr = left_ptr;
+			if (dict_pivot != right_ptr)
+				left_ptr = right_ptr->Next;
+			else
+				left_ptr = right_ptr;
+			if (dict_pivot != buf_ptr/* || left_ptr==right_ptr*/)
+				right_ptr = buf_ptr->Previous;
+			else
+				right_ptr = buf_ptr;
 		}
 	}
 	pivot = "";
-	buf = "";
-		//Sorting left side from pivot
-		if (dict_pivot != start_dict && dict_pivot->Previous != start_dict)//otherwise the dict 1 elem or 2 elem long incl. pivot - so it's sorted guaranteed
-			QuickSort_Dict(start_dict, next_pivot_left, dict_pivot->Previous);
+	//Sorting left side from pivot
+	if (dict_pivot != start_dict && dict_pivot->Previous != start_dict)//otherwise the dict 1 elem or 2 elem long incl. pivot - so it's sorted guaranteed
+		QuickSort_Dict(start_dict, next_pivot_left, dict_pivot->Previous, dict);
 	//Sorting right side from pivot
 	if (dict_pivot != end_dict && dict_pivot != end_dict->Previous)
-		QuickSort_Dict(dict_pivot->Next, next_pivot_right, end_dict);
+		QuickSort_Dict(dict_pivot->Next, next_pivot_right, end_dict, dict);
 }
 
 //-----------------------------------------------------------------------------------------------------||
